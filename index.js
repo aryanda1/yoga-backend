@@ -13,10 +13,7 @@ const app = express();
 connectDB();
 
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "http://your-production-url",
-  ];
+  const allowedOrigins = ["http://localhost:5173", "https://yoga.ary0n.fun"];
   const origin = req.headers.origin;
   console.log(origin);
   if (allowedOrigins.includes(origin)) {
