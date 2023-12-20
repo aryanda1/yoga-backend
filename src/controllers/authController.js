@@ -149,17 +149,16 @@ const handleLogout = async (req, res) => {
   });
 
   try {
-    User.findOne({ refreshToken }).exec((err, user) => {
-      if (err) {
-        return res.status(500).json(err);
-      }
-      if (!user) {
-        return res.status(204);
-      }
-      user.updateOne({ refreshToken: "" }).then(() => {
-        return res.sendStatus(204);
+    User.findOne({ refreshToken })
+      .exec()
+      .then((user) => {
+        if (!user) {
+          return res.status(204);
+        }
+        user.updateOne({ refreshToken: "" }).then(() => {
+          return res.sendStatus(204);
+        });
       });
-    });
   } catch (err) {
     return res.status(500).json(err);
   }
