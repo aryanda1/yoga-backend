@@ -18,8 +18,8 @@ contactEmail.verify((error) => {
 });
 
 export async function sendMail(req, res) {
-  const { name, email, message } = req.body;
-  var content = `name: ${name} \n email: ${email} \n message: ${message} `;
+  const { name, email, message,subject } = req.body;
+  var content = `name: ${name} \n email: ${email} \n subject:${subject} \n message: ${message} `;
   var mail = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_RECEIVER, // Change to email address that you want to receive messages on
