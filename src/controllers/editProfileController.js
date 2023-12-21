@@ -40,14 +40,7 @@ const editEmail = async (user, newEmail, res) => {
     await user.updateOne({ email: newEmail }).exec();
     return res.status(200).json({
       message: "Email updated successfully",
-      user: {
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber,
-        email: newEmail,
-        community: user.community,
-      },
+      email:newEmail
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -62,15 +55,7 @@ const editPassword = async (user, newPassword, res) => {
     await user.updateOne({ password: hashedPassword }).exec();
 
     return res.status(200).json({
-      message: "Password updated successfully",
-      user: {
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        community: user.community,
-      },
+      message: "Password updated successfully"
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -83,14 +68,7 @@ const editFirstName = async (user, newFirstName, res) => {
 
     return res.status(200).json({
       message: "First name updated successfully",
-      user: {
-        username: user.username,
-        firstName: newFirstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        community: user.community,
-      },
+      firstName:newFirstName
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -103,13 +81,7 @@ const editLastName = async (user, newLastName, res) => {
 
     return res.status(200).json({
       message: "Last name updated successfully",
-      user: {
-        username: user.username,
-        firstName: user.firstName,
         lastName: newLastName,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        community: user.community,
       },
     });
   } catch (err) {
@@ -123,14 +95,7 @@ const editNextBatch = async (user, newNextBatch, res) => {
 
     return res.status(200).json({
       message: "Phone number updated successfully",
-      user: {
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: newNextBatch,
-        email: user.email,
-        community: user.community,
-      },
+      nextBatch:newNextBatch
     });
   } catch (err) {
     return res.status(400).json(err);
