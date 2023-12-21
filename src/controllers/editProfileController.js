@@ -82,7 +82,6 @@ const editLastName = async (user, newLastName, res) => {
     return res.status(200).json({
       message: "Last name updated successfully",
         lastName: newLastName,
-      },
     });
   } catch (err) {
     return res.status(400).json(err);
