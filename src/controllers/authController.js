@@ -6,7 +6,7 @@ import "dotenv/config";
 const handleRegistration = async (req, res) => {
   const { firstName, lastName, username, email, password, age, batch } =
     req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (
     !firstName ||
     !lastName ||
@@ -80,7 +80,7 @@ const handleRegistration = async (req, res) => {
 
 const handleLogin = async (req, res) => {
   const { username, loginPassword } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (!username || !loginPassword) {
     return res.status(400).json("Username and password are required");
   }
@@ -130,6 +130,7 @@ const handleLogin = async (req, res) => {
         batch: userExists.batch,
         payments: userExists.payments,
         joiningDate: userExists.joiningDate,
+        nextBatch: userExists.nextBatch,
       },
     });
   } catch (err) {

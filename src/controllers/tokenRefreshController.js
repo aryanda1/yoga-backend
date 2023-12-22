@@ -43,6 +43,7 @@ export const handleTokenRefresh = (req, res) => {
             batch: user.batch,
             payments: user.payments,
             joiningDate: user.joiningDate,
+            nextBatch: user.nextBatch,
           },
         });
       })

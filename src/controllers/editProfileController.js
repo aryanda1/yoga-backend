@@ -18,7 +18,7 @@ export const editProfile = async (req, res) => {
     }
     switch (editProperty) {
       case "email":
-        console.log(editValue);
+        // console.log(editValue);
         return editEmail(user, editValue, res);
       case "password":
         return editPassword(user, editValue, res);
@@ -40,7 +40,7 @@ const editEmail = async (user, newEmail, res) => {
     await user.updateOne({ email: newEmail }).exec();
     return res.status(200).json({
       message: "Email updated successfully",
-      email:newEmail
+      email: newEmail,
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -55,7 +55,7 @@ const editPassword = async (user, newPassword, res) => {
     await user.updateOne({ password: hashedPassword }).exec();
 
     return res.status(200).json({
-      message: "Password updated successfully"
+      message: "Password updated successfully",
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -68,7 +68,7 @@ const editFirstName = async (user, newFirstName, res) => {
 
     return res.status(200).json({
       message: "First name updated successfully",
-      firstName:newFirstName
+      firstName: newFirstName,
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -81,7 +81,7 @@ const editLastName = async (user, newLastName, res) => {
 
     return res.status(200).json({
       message: "Last name updated successfully",
-        lastName: newLastName,
+      lastName: newLastName,
     });
   } catch (err) {
     return res.status(400).json(err);
@@ -94,7 +94,7 @@ const editNextBatch = async (user, newNextBatch, res) => {
 
     return res.status(200).json({
       message: "Phone number updated successfully",
-      nextBatch:newNextBatch
+      nextBatch: newNextBatch,
     });
   } catch (err) {
     return res.status(400).json(err);
