@@ -1,4 +1,4 @@
-import cloudinary from "../utils/CLoudinary.js";
+import cloudinary from "../utils/cloudinary.js";
 
 const uploadImage = async (path) => {
   const result = await cloudinary.uploader.upload(path);
