@@ -1,9 +1,16 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import { uploadImage, deleteImage } from "./imgUploadController.js";
+import fs from "fs-extra";
 
 export const editProfile = async (req, res) => {
-  const { editProperty, editValue } = req.body;
+  let { editProperty, editValue } = req.body;
   const { username } = req.body;
+  if (editProperty === "imageUrl") {
+    if (!req.file)
+      return res.status(400).json({ message: "Image is required" });
+    editValue = req.file.path;
+  }
 
   if (!editProperty || !editValue) {
     return res.status(400).json({ message: "All fields are required" });
@@ -14,7 +21,7 @@ export const editProfile = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json("User not found. Your token seems to be invalid");
+        .json({ message: "User not found. Your token seems to be invalid" });
     }
     switch (editProperty) {
       case "email":
@@ -28,6 +35,8 @@ export const editProfile = async (req, res) => {
         return editLastName(user, editValue, res);
       case "nextBatch":
         return editNextBatch(user, editValue, res);
+      case "imageUrl":
+        return editImageUrl(user, editValue, res);
       default:
         return res.status(400).json({ message: "Invalid edit property" });
     }
@@ -97,6 +106,24 @@ const editNextBatch = async (user, newNextBatch, res) => {
       nextBatch: newNextBatch,
     });
   } catch (err) {
+    return res.status(400).json(err);
+  }
+};
+const editImageUrl = async (user, imagePath, res) => {
+  try {
+    if (user.imageUrl) deleteImage(user.imageUrl);
+
+    const imageUrl = await uploadImage(imagePath);
+    fs.remove(imagePath);
+    await user.updateOne({ imageUrl }).exec();
+
+    return res.status(200).json({
+      message: "Profile Picture updated successfully",
+      imageUrl,
+    });
+  } catch (err) {
+    console.log(err);
+
     return res.status(400).json(err);
   }
 };

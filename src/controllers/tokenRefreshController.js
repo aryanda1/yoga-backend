@@ -44,6 +44,7 @@ export const handleTokenRefresh = (req, res) => {
             payments: user.payments,
             joiningDate: user.joiningDate,
             nextBatch: user.nextBatch,
+            imageUrl: user.imageUrl,
           },
         });
       })

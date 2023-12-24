@@ -54,6 +54,9 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  imageUrl: {
+    type: String,
+  },
 });
 export default mongoose.model("User", userSchema);
 // users
