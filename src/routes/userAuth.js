@@ -4,9 +4,8 @@ import {
   handleRegistration,
   handleLogout,
 } from "../controllers/authController.js";
-import upload from "../middlewares/multerUpload.js";
+import upload from "../middlewares/multerUploadMemory.js";
 const router = Router();
-console.log(upload);
 
 router.post("/login", handleLogin);
 router.post("/register", upload, handleRegistration);

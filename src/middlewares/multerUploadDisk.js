@@ -1,4 +1,5 @@
 import multer from "multer";
+//if disk storage is allowed in the deployment
 
 const multerUpload = async (request, response, next) => {
   var storage = multer.diskStorage({

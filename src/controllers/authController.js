@@ -3,12 +3,18 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 import { uploadImage } from "./imgUploadController.js";
-import fs from "fs-extra";
 
 const handleRegistration = async (req, res) => {
-  const { firstName, lastName, username, email, password, age, batch, image } =
-    req.body;
-  // console.log(req.body);
+  const {
+    firstName,
+    lastName,
+    username,
+    email,
+    password,
+    age,
+    batch,
+    imageDataURI,
+  } = req.body;
   if (
     !firstName ||
     !lastName ||
@@ -46,9 +52,8 @@ const handleRegistration = async (req, res) => {
     );
     let imageUrl =
       "https://i.pinimg.com/736x/7f/79/6d/7f796d57218d9cd81a92d9e6e8e51ce4--free-avatars-online-profile.jpg";
-    if (image) {
-      imageUrl = await uploadImage(req.file.path);
-      fs.remove(req.file.path);
+    if (imageDataURI) {
+      imageUrl = await uploadImage(imageDataURI);
     }
     const newUser = new User({
       email,
