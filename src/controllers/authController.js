@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 import "dotenv/config";
 import { uploadImage } from "./imgUploadController.js";
 
@@ -92,23 +93,59 @@ const handleRegistration = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
+async function verifyGoogleToken(token) {
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: GOOGLE_CLIENT_ID,
+    });
+    return { payload: ticket.getPayload() };
+  } catch (error) {
+    return { error: "Invalid user detected. Please try again" };
+  }
+}
 const handleLogin = async (req, res) => {
-  const { username, loginPassword } = req.body;
-  // console.log(req.body);
-  if (!username || !loginPassword) {
-    return res.status(400).json("Username and password are required");
-  }
-  const userExists = await User.findOne({ username }).populate("payments");
-  if (!userExists) {
-    return res.status(404).json("User not found");
-  }
-  const passwordMatch = await bcrypt.compare(
-    loginPassword,
-    userExists.password
-  );
-  if (!passwordMatch) {
-    return res.status(401).json("Incorrect password");
+  const loginType = req.headers["x-auth-method"];
+  let userExists;
+  if (loginType === "Google") {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json("Missing credential");
+    }
+    const verificationResponse = await verifyGoogleToken(credential);
+    if (verificationResponse.error) {
+      return res.status(400).json(verificationResponse.error);
+    }
+
+    const profile = verificationResponse?.payload;
+    userExists = await User.findOne({ email: profile.email }).populate(
+      "payments"
+    );
+
+    if (!userExists) {
+      return res.status(404).json("User not found");
+    }
+  } else {
+    const { credential } = req.body;
+    const { username, loginPassword } = credential;
+    // console.log(req.body);
+    if (!username || !loginPassword) {
+      return res.status(400).json("Username and password are required");
+    }
+    userExists = await User.findOne({ username }).populate("payments");
+    if (!userExists) {
+      return res.status(404).json("User not found");
+    }
+    const passwordMatch = await bcrypt.compare(
+      loginPassword,
+      userExists.password
+    );
+    if (!passwordMatch) {
+      return res.status(401).json("Incorrect password");
+    }
   }
   const accessToken = jwt.sign(
     { username: userExists.username },
@@ -126,6 +163,7 @@ const handleLogin = async (req, res) => {
   );
 
   try {
+    const username = userExists.username;
     await User.updateOne({ username }, { refreshToken });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -150,6 +188,7 @@ const handleLogin = async (req, res) => {
       },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json(err);
   }
 };
